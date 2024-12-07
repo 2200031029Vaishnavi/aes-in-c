@@ -1,0 +1,50 @@
+package com.klef.jfsd.exam;
+
+import org.hibernate.*;
+import org.hibernate.cfg.Configuration;
+
+import java.util.List;
+
+public class ClientDemo {
+    public static void main(String[] args) {
+        // Initialize Hibernate SessionFactory
+        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        // Insert records
+        Client client1 = new Client();
+        client1.setName("John Doe");
+        client1.setGender("Male");
+        client1.setAge(28);
+        client1.setLocation("New York");
+        client1.setEmail("johndoe@example.com");
+        client1.setMobileNumber("1234567890");
+
+        Client client2 = new Client();
+        client2.setName("Jane Smith");
+        client2.setGender("Female");
+        client2.setAge(25);
+        client2.setLocation("Los Angeles");
+        client2.setEmail("janesmith@example.com");
+        client2.setMobileNumber("0987654321");
+
+        session.save(client1);
+        session.save(client2);
+        transaction.commit();
+
+        // Print all records
+        List<Client> clients = session.createQuery("from Client", Client.class).list();
+        System.out.println("Client Records:");
+        for (Client client : clients) {
+            System.out.println("ID: " + client.getId() + ", Name: " + client.getName() +
+                    ", Gender: " + client.getGender() + ", Age: " + client.getAge() +
+                    ", Location: " + client.getLocation() + ", Email: " + client.getEmail() +
+                    ", Mobile: " + client.getMobileNumber());
+        }
+
+        // Close session
+        session.close();
+        sessionFactory.close();
+    }
+}
